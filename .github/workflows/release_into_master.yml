@@ -1,0 +1,28 @@
+name: Horneados
+on:
+  create:
+    tags:
+      - v*
+jobs:
+  job1:
+    name: Create Release Branch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2.1.0
+      - name: Create Release
+        uses: aaiezza/create-release@master
+        id: create_release
+        with:
+          release_branch: develop
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  merge-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: everlytic/branch-merge@1.1.0
+        with:
+          github_token: ${{ github.token }}
+          source_ref: ${{ github.ref }}
+          target_branch: 'master'
+          commit_message_template: '[Automated] Merged {source_ref} into target {target_branch}'
