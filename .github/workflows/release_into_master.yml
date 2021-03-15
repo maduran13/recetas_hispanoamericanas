@@ -5,17 +5,19 @@ on:
       - v*
 jobs:
   job1:
-    name: Create Release Branch
+    name: Create Release branch
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.1.0
-      - name: Create Release
-        uses: aaiezza/create-release@master
-        id: create_release
-        with:
-          release_branch: develop
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - uses: peterjgrainger/action-create-branch@v2.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          branch: 'release-${{ env.RELEASE_VERSION }}'
+      - uses: actions/checkout@v2
+        with:
+          ref: 'release-${{ env.RELEASE_VERSION }}'
   merge-branch:
     runs-on: ubuntu-latest
     steps:
