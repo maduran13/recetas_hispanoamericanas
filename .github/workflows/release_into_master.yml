@@ -8,6 +8,8 @@ jobs:
     name: Create Release branch
     runs-on: ubuntu-latest
     steps:
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - uses: peterjgrainger/action-create-branch@v2.0.1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -30,6 +32,6 @@ jobs:
       - uses: everlytic/branch-merge@1.1.0
         with:
           github_token: ${{ github.token }}
-          source_ref: ${{ steps.extract_branch.outputs.branch }}
+          source_ref: '${{ steps.extract_branch.outputs.branch }}'
           target_branch: 'master'
           commit_message_template: '[Automated] Merged {source_ref} into target {target_branch}'
