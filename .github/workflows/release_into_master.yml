@@ -25,9 +25,13 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: 'release-${{ env.RELEASE_VERSION }}'
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch
       - uses: everlytic/branch-merge@1.1.0
         with:
           github_token: ${{ github.token }}
-          source_ref: ${{ github.ref }}
+          source_ref: ${{ steps.extract_branch.outputs.branch }}
           target_branch: 'master'
           commit_message_template: '[Automated] Merged {source_ref} into target {target_branch}'
