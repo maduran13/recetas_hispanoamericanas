@@ -27,11 +27,11 @@ jobs:
           ref: 'release-${{ env.RELEASE_VERSION }}'
       - name: Extract branch name
         shell: bash
-        run: echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch
       - uses: everlytic/branch-merge@1.1.0
         with:
           github_token: ${{ github.token }}
-          source_ref: $BRANCH_NAME
+          source_ref: ${GITHUB_HEAD_REF}
           target_branch: 'master'
           commit_message_template: '[Automated] Merged {source_ref} into target {target_branch}'
